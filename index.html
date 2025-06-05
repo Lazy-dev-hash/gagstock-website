@@ -1,79 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gagstock Tracker</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 2rem;
-      background: #f4f4f4;
-      color: #222;
-    }
-    h1 { font-size: 1.8rem; }
-    pre {
-      background: #fff;
-      padding: 1rem;
-      border-radius: 10px;
-      white-space: pre-wrap;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grow A Garden Stock Tracker</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>🌾 Grow A Garden — Gagstock Tracker</h1>
-  <button onclick="loadStock()">🔄 Refresh Stock</button>
-  <pre id="output">Loading...</pre>
+    <div class="container">
+        <h1>🌾 Grow A Garden — Tracker</h1>
+        <p class="last-updated">Last Updated: <span id="lastUpdated">Loading...</span></p>
 
-  <script>
-    async function fetchAPI(type) {
-      const res = await fetch(`http://localhost:3000/api/${type}`);
-      return res.json();
-    }
+        <div class="section">
+            <h2>🛠️ Gear:</h2>
+            <pre id="gearList">Loading gear...</pre>
+        </div>
 
-    async function loadStock() {
-      const output = document.getElementById("output");
-      output.textContent = "🔄 Fetching stock data...";
+        <div class="section">
+            <h2>🌱 Seeds:</h2>
+            <pre id="seedList">Loading seeds...</pre>
+        </div>
 
-      try {
-        const [gearSeeds, egg, weather, honey, cosmetics, emojiSeeds] = await Promise.all([
-          fetchAPI("gearSeeds"),
-          fetchAPI("egg"),
-          fetchAPI("weather"),
-          fetchAPI("honey"),
-          fetchAPI("cosmetics"),
-          fetchAPI("seedsEmoji")
-        ]);
+        <div class="section">
+            <h2>🥚 Eggs:</h2>
+            <pre id="eggList">Loading eggs...</pre>
+        </div>
 
-        const seeds = gearSeeds.seeds || [];
-        const seedList = seeds.map(seed => {
-          const name = seed.split(" **")[0];
-          const emoji = emojiSeeds.seedsStock?.find(e => e.name.toLowerCase() === name.toLowerCase())?.emoji || "";
-          return `- ${emoji} ${seed}`;
-        }).join("\n");
+        <div class="section">
+            <h2>🎨 Cosmetics:</h2>
+            <pre id="cosmeticsList">Loading cosmetics...</pre>
+            <p>⏳ Restock in: <span id="cosmeticsRestock">Loading...</span></p>
+        </div>
 
-        const gearList = (gearSeeds.gear || []).map(item => `- ${item}`).join("\n");
-        const eggList = (egg.egg || []).map(item => `- ${item}`).join("\n");
-        const cosmeticsList = (cosmetics.cosmetics || []).map(item => `- ${item}`).join("\n");
-        const honeyList = (honey.honeyStock || []).map(h => `- ${h.name}: ${h.value}`).join("\n");
+        <div class="section">
+            <h2>🍯 Honey Stock:</h2>
+            <pre id="honeyList">Loading honey stock...</pre>
+            <p>⏳ Restock in: <span id="honeyRestock">Loading...</span></p>
+        </div>
 
-        const weatherText = `${weather.icon || "🌤️"} ${weather.currentWeather || "Unknown"}`;
-        const cropBonus = weather.cropBonuses || "None";
+        <div class="section">
+            <h2>🌤️ Weather:</h2>
+            <p id="weatherText">Loading weather...</p>
+            <p>🪴 Crop Bonus: <span id="cropBonus">Loading...</span></p>
+        </div>
 
-        output.textContent =
-          `🛠️ Gear:\n${gearList}\n\n` +
-          `🌱 Seeds:\n${seedList}\n\n` +
-          `🥚 Eggs:\n${eggList}\n\n` +
-          `🎨 Cosmetics:\n${cosmeticsList}\n\n` +
-          `🍯 Honey Stock:\n${honeyList}\n\n` +
-          `🌦️ Weather: ${weatherText}\n` +
-          `🪴 Crop Bonus: ${cropBonus}`;
-      } catch (err) {
-        output.textContent = `❌ Error: ${err.message}`;
-      }
-    }
+        <div class="section">
+            <h2>📅 Restock Timers:</h2>
+            <p>Gear/Seed restock in: <span id="gearRestock">Loading...</span></p>
+            <p>Egg restock in: <span id="eggRestock">Loading...</span></p>
+        </div>
+    </div>
 
-    loadStock();
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
